@@ -64,7 +64,6 @@ void GameController::restartGame()
     scene.addItem(fd2);
     _foodEaten = 0;
 
-    resume();
 }
 
 void GameController::addNewFood()
@@ -180,6 +179,25 @@ void GameController::resume()
             &scene, SLOT(advance()));
 }
 
+void GameController::mainMenu_buttonPressed()
+{
+    qDebug() << "Press the startButton.";
+    if (_inMainMenu) {
+        disconnect(&timer, SIGNAL(timeout()),
+                this, SLOT(showMainMenu()));
+    }
+
+    if (!_inGaming) {
+        resume();
+    }
+    _inMainMenu = false;
+    _inGaming = true;
+    _inGameOver = false;
+    restartGame();
+
+
+}
+
 void GameController::mainMenu_handleKeyPressed(QKeyEvent *event)
 {
     if (!event->isAutoRepeat()) {
@@ -191,6 +209,9 @@ void GameController::mainMenu_handleKeyPressed(QKeyEvent *event)
                 disconnect(&timer, SIGNAL(timeout()),
                         this, SLOT(showMainMenu()));
 
+                if (!_inGaming) {
+                    resume();
+                }
                 _inMainMenu = false;
                 _inGaming = true;
                 _inGameOver = false;

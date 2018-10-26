@@ -20,6 +20,8 @@ public:
     GameController(QGraphicsScene &scene, QObject *parent = 0);
     ~GameController();
 
+    void mainMenu_buttonPressed();
+
     void snakeAteFood(Snake *snake, Food *food);
     void snakeHitWall(Snake *snake);
     void snakeAteItself(Snake *snake);

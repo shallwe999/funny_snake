@@ -1,17 +1,24 @@
 #include <QGraphicsView>
 #include <QTimer>
+#include <QMessageBox>
 #include <QDebug>
 
 #include "constants.h"
 #include "gamecontroller.h"
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    ui(new Ui::MainWindow),
     scene(new QGraphicsScene(this)),
     view(new QGraphicsView(scene, this)),
     game(new GameController(*scene, this))
 {
+    ui->setupUi(this);
+
+    setWindowIcon(QIcon(":/data/game-icon"));
+    setWindowTitle(tr("Funny Snake"));
     setCentralWidget(view);
     resize(600, 600);
 
@@ -53,3 +60,46 @@ void MainWindow::adjustViewSize()
     qDebug() << "In function adjustViewSize().";
 }
 
+void MainWindow::on_actionStart_triggered()
+{
+    game->mainMenu_buttonPressed();
+}
+
+void MainWindow::on_actionRules_triggered()
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Instructions"));
+    msgBox.setText(tr("                    ##  Game  Rules  ##\n"\
+                      "- A simple snake game!\n"\
+                      "- You can move all directions inside the wall.\n"\
+                      "- The red bean is normal (+1 pt).\n"\
+                      "- The blue bean is special (+3pts).\n"\
+                      "- Blue beans have many buffs, just have a try.\n"\
+                      "\n"\
+                      "                  ##  Keyboard Config  ##\n"\
+                      "- Main menu\n"\
+                      "    - Press ENTER to start.\n"\
+                      "- Playing\n"\
+                      "    - Press UP to start moving.\n"\
+                      "    - Press LEFT or RIGHT to change the direction.\n"\
+                      "- Game over\n"\
+                      "    - Press ENTER to back to the main menu.\n"));
+    msgBox.exec();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("About"));
+    msgBox.setText(tr("Name: funny snake\n"\
+                      "Author: Shallwe\n"\
+                      "Date: 2018/10/26\n"\
+                      "Version: Beta\n"\
+                      "Instruction: A simple snake game based on Qt5.\n"));
+    msgBox.exec();
+}
+
+void MainWindow::on_actionQuit_triggered()
+{
+    close();
+}
