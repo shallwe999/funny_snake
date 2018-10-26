@@ -26,25 +26,24 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    food.cpp \
-    gamecontroller.cpp \
-    wall.cpp \
-    snake.cpp \
-    scoreboard.cpp
+        src/mainwindow.cpp \
+        src/food.cpp \
+        src/gamecontroller.cpp \
+        src/wall.cpp \
+        src/snake.cpp \
+        src/scoreboard.cpp
 
 HEADERS += \
-        mainwindow.h \
-    constants.h \
-    food.h \
-    gamecontroller.h \
-    wall.h \
-    snake.h \
-    scoreboard.h
+        inc/mainwindow.h \
+        inc/constants.h \
+        inc/food.h \
+        inc/gamecontroller.h \
+        inc/wall.h \
+        inc/snake.h \
+        inc/scoreboard.h
 
 FORMS += \
-        mainwindow.ui \
-    mainwindow.ui
+        mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -52,4 +51,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    res.qrc
+        res/res.qrc
