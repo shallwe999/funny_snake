@@ -81,11 +81,11 @@ void GameController::addNewFood()
     } while (snake->isTheBody(QPointF(x, y), FOOD_SIZE));
 
     GameObjectTypes foodKind = GO_Food_Normal;
-    if (_foodEaten > 10) {
+    if (_foodEaten > 10) {  //调试用1 运行用10
         // special food
         qreal randnum = static_cast<qreal>( static_cast<double>(qrand()) / RAND_MAX );
-        if (randnum > 0.8) {
-            int buff = static_cast<int>((qrand() % 4));
+        if (randnum > 0.8) {  //调试用0.1 运行用0.8
+            int buff = static_cast<int>((qrand() % 5));
             switch (buff) {
                 case 0:
                     foodKind = GO_Food_Accelerate;
@@ -98,6 +98,9 @@ void GameController::addNewFood()
                     break;
                 case 3:
                     foodKind = GO_Food_AddLength;
+                    break;
+                case 4:
+                    foodKind = GO_Food_RotateSwift;
                     break;
             }
         }
@@ -118,7 +121,8 @@ void GameController::snakeAteFood(Snake *snake, Food *food)
     GameObjectTypes buff = food->getFoodKind();
     if (buff == GO_Food_Accelerate
             || buff == GO_Food_SlowDown
-            || buff == GO_Food_AddLength) {
+            || buff == GO_Food_AddLength
+            || buff == GO_Food_RotateSwift) {
         snake->setBuff(buff, 50);
         scoreboard->addScore(3);
     }

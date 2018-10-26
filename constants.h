@@ -14,6 +14,7 @@ enum GameObjectTypes {
     GO_Food_SlowDown,
     GO_Food_MoreFood,
     GO_Food_AddLength,
+    GO_Food_RotateSwift
 };
 
 const int GRID_SIZE = 40;

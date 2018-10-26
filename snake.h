@@ -51,6 +51,7 @@ private:
 
     int            _buffTime;
     int            _lengthAdded;
+    bool           _rotateBuff;
 
     GameController &controller;
 };

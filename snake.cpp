@@ -8,6 +8,7 @@
 
 static const int RUNNING_LENGTH = 9;
 static const qreal ROTATE_ANGLE = PI / 16;
+static const qreal ROTATE_ANGLE_SWIFT = PI / 10;
 
 Snake::Snake(GameController &controller) :
     _head(0, 0),
@@ -18,6 +19,7 @@ Snake::Snake(GameController &controller) :
     _snakeColor(SNAKE_COLOR_NORMAL),
     _buffTime(-1),
     _lengthAdded(0),
+    _rotateBuff(false),
     controller(controller)
 {
 }
@@ -111,6 +113,9 @@ void Snake::setBuff(GameObjectTypes buff, int period)
         _growing += 10;
         _lengthAdded += 10;
     }
+    else if (buff == GO_Food_RotateSwift) {
+        _rotateBuff = true;
+    }
 }
 
 
@@ -161,6 +166,7 @@ void Snake::advance(int step)
                 _tail.takeFirst();
         }
         _lengthAdded = 0;
+        _rotateBuff = false;
         _snakeColor = SNAKE_COLOR_NORMAL;
     }
 
@@ -178,7 +184,12 @@ void Snake::moveForward()
 
 void Snake::turnLeft()
 {
-    _headDirection += ROTATE_ANGLE;
+    if (_rotateBuff) {
+        _headDirection += ROTATE_ANGLE_SWIFT;
+    }
+    else {
+        _headDirection += ROTATE_ANGLE;
+    }
     if (_headDirection > PI * 2) {
         _headDirection -= PI * 2;
     }
@@ -188,7 +199,12 @@ void Snake::turnLeft()
 
 void Snake::turnRight()
 {
-    _headDirection -= ROTATE_ANGLE;
+    if (_rotateBuff) {
+        _headDirection -= ROTATE_ANGLE_SWIFT;
+    }
+    else {
+        _headDirection -= ROTATE_ANGLE;
+    }
     if (_headDirection < 0) {
         _headDirection += PI * 2;
     }
@@ -205,7 +221,8 @@ void Snake::handleCollisions()
                 || collidingItem->data(GD_Type) == GO_Food_Accelerate
                 || collidingItem->data(GD_Type) == GO_Food_AddLength
                 || collidingItem->data(GD_Type) == GO_Food_MoreFood
-                || collidingItem->data(GD_Type) == GO_Food_SlowDown) {
+                || collidingItem->data(GD_Type) == GO_Food_SlowDown
+                || collidingItem->data(GD_Type) == GO_Food_RotateSwift) {
             // Let GameController handle the event by putting another apple
             qDebug() << "Snake eat food.";
             controller.snakeAteFood(this, (Food *)collidingItem);
