@@ -17,7 +17,7 @@ class GameController : public QObject
 {
     Q_OBJECT
 public:
-    GameController(QGraphicsScene &scene, QObject *parent = 0);
+    GameController(QGraphicsScene &scene, QObject *parent = nullptr);
     ~GameController();
 
     void mainMenu_buttonPressed();
@@ -28,6 +28,8 @@ public:
 
 public slots:
     void showMainMenu();
+    void showReadyText();
+    void hideReadyText();
     void pause();
     void resume();
     void gameOver();
@@ -48,6 +50,7 @@ private:
 
     Snake *snake;
     Scoreboard *scoreboard;
+    QGraphicsTextItem *readyText;
 
     int _foodEaten;
 

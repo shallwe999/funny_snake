@@ -3,7 +3,7 @@
 
 #include <QGraphicsItem>
 
-#include "constants.h"
+#include "inc/constants.h"
 
 class Food : public QGraphicsItem
 {

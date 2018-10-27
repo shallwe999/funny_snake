@@ -2,9 +2,9 @@
 #include <QDebug>
 #include <cmath>
 
-#include "constants.h"
-#include "gamecontroller.h"
-#include "snake.h"
+#include "inc/constants.h"
+#include "inc/gamecontroller.h"
+#include "inc/snake.h"
 
 static const int RUNNING_LENGTH = 9;
 static const qreal ROTATE_ANGLE = PI / 16;

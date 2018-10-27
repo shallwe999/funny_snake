@@ -4,18 +4,19 @@
 #include <QDebug>
 #include <QPainter>
 
-#include "gamecontroller.h"
-#include "constants.h"
-#include "food.h"
-#include "snake.h"
-#include "wall.h"
-#include "scoreboard.h"
+#include "inc/gamecontroller.h"
+#include "inc/constants.h"
+#include "inc/food.h"
+#include "inc/snake.h"
+#include "inc/wall.h"
+#include "inc/scoreboard.h"
 
 GameController::GameController(QGraphicsScene &scene, QObject *parent) :
     QObject(parent),
     scene(scene),
     snake(new Snake(*this)),
-    scoreboard(new Scoreboard(*this))
+    scoreboard(new Scoreboard(*this)),
+    readyText(nullptr)
 {
     timer.start(15);  //游戏循环的定时器（15毫秒1帧）
 
@@ -44,6 +45,26 @@ void GameController::showMainMenu()
     scene.addItem(text);
 }
 
+void GameController::showReadyText()
+{
+    if (snake->getMoveDirection() == Snake::NoMove) {
+        readyText = new QGraphicsTextItem("Ready?");
+        readyText->setFont(QFont("Times New Roman", 30, 75, true));
+        readyText->setPos(QPointF(- readyText->boundingRect().width() / 2, 30));
+        readyText->setDefaultTextColor(TEXT_COLOR_3);
+        scene.addItem(readyText);
+    }
+}
+
+void GameController::hideReadyText()
+{
+    if (readyText != nullptr) {
+        scene.removeItem(readyText);
+        readyText = nullptr;
+    }
+
+}
+
 void GameController::restartGame()
 {
     qDebug() << "In restartGame().";
@@ -64,6 +85,7 @@ void GameController::restartGame()
     scene.addItem(fd2);
     _foodEaten = 0;
 
+    QTimer::singleShot(0, this, SLOT(showReadyText()));
 }
 
 void GameController::addNewFood()
@@ -231,6 +253,7 @@ void GameController::gaming_handleKeyPressed(QKeyEvent *event)
             case Qt::Key_Up:
                 if (snake->getMoveDirection() == Snake::NoMove) {
                     snake->setMoveDirection(Snake::MoveForward);
+                    QTimer::singleShot(0, this, SLOT(hideReadyText()));
                 }
                 break;
             case Qt::Key_Left:

@@ -4,7 +4,7 @@
 #include <QGraphicsItem>
 #include <QRectF>
 
-#include "constants.h"
+#include "inc/constants.h"
 
 class GameController;
 

@@ -1,7 +1,7 @@
 #include <string>
 #include <QDebug>
 
-#include "scoreboard.h"
+#include "inc/scoreboard.h"
 
 Scoreboard::Scoreboard(GameController &controller) :
     _score(0),
@@ -29,7 +29,7 @@ QPainterPath Scoreboard::shape() const
 
     _scorestr->replace(0, 99, QString("Score: %1").arg(_score));
     QString tempstr = QString(_scorestr->data());
-    path.addText( QPointF(-200, -220), QFont("Times New Roman", 25, 70, true), tempstr );
+    path.addText( QPointF(-200, -220), QFont("Times New Roman", 25, 75, true), tempstr );
 
     return path;
 }

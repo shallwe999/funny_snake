@@ -3,9 +3,9 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "constants.h"
-#include "gamecontroller.h"
-#include "mainwindow.h"
+#include "inc/constants.h"
+#include "inc/gamecontroller.h"
+#include "inc/mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :

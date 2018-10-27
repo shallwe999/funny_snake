@@ -1,7 +1,7 @@
 #include <QPainter>
 
-#include "constants.h"
-#include "food.h"
+#include "inc/constants.h"
+#include "inc/food.h"
 
 Food::Food(qreal x, qreal y, GameObjectTypes kind)
 {

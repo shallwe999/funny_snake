@@ -1,7 +1,7 @@
 #include <QPainter>
 
-#include "constants.h"
-#include "wall.h"
+#include "inc/constants.h"
+#include "inc/wall.h"
 
 Wall::Wall()
 {

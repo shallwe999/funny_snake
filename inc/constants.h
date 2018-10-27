@@ -28,6 +28,7 @@ const QColor BG_COLOR_1 = QColor(235, 235, 235);
 const QColor BG_COLOR_2 = QColor(160, 160, 160);
 const QColor TEXT_COLOR_1 = QColor(51, 200, 85);
 const QColor TEXT_COLOR_2 = QColor(254, 67, 101);
+const QColor TEXT_COLOR_3 = QColor(122, 122, 200);
 const QColor WALL_COLOR_1 = QColor(255, 102, 0);
 const QColor WALL_COLOR_2 = QColor(200, 112, 0);
 const QColor SNAKE_COLOR_NORMAL = QColor(60, 154, 196);
