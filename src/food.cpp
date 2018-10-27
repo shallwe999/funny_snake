@@ -36,7 +36,7 @@ void Food::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 QPainterPath Food::shape() const
 {
     QPainterPath p;
-    p.addEllipse(QPointF(GRID_SIZE / 2, GRID_SIZE / 2), FOOD_SIZE, FOOD_SIZE);
+    p.addEllipse(QPointF(0, 0), FOOD_SIZE, FOOD_SIZE);
     return p;
 }
 

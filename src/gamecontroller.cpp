@@ -94,10 +94,10 @@ void GameController::addNewFood()
     qreal x, y;
 
     do {
-        int radius = static_cast<int>((qrand() % 190));
+        int radius = qrand() % 190;
         qreal angle = static_cast<qreal>( (static_cast<double>(qrand()) / RAND_MAX) * PI*2 );
-        x = radius * cos(angle);
-        y = radius * sin(angle);
+        x = static_cast<qreal>(radius) * cos(angle);
+        y = static_cast<qreal>(radius) * sin(angle);
 
     } while (snake->isTheBody(QPointF(x, y), FOOD_SIZE));
 

@@ -107,7 +107,7 @@ void Snake::setBuff(GameObjectTypes buff, int period)
         }
     }
     else if (buff == GO_Food_SlowDown) {
-        _speed += 2;
+        _speed += 3;
     }
     else if (buff == GO_Food_AddLength) {
         _growing += 10;

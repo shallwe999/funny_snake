@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QDebug>
+#include <ctime>
 
 #include "inc/constants.h"
 #include "inc/gamecontroller.h"
@@ -28,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // 在0ms之后，调用receiver的member槽函数，即在下一次事件循环开始时，立刻调用指定的槽函数
     QTimer::singleShot(0, this, SLOT(adjustViewSize()));
 
+    // 生成随机种子
+    qsrand(static_cast<uint>(time(nullptr)));
 }
 
 MainWindow::~MainWindow()
