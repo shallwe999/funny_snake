@@ -30,6 +30,8 @@ public:
 
     void setBuff(GameObjectTypes buff, int period);
 
+    void updateWallRadius(int newRadius);
+
 protected:
     void advance(int step);
 
@@ -52,6 +54,7 @@ private:
     int            _buffTime;
     int            _lengthAdded;
     bool           _rotateBuff;
+    int            _nowWallRadius;
 
     GameController &controller;
 };

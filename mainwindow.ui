@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>600</height>
+    <width>620</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,14 +27,16 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionStart"/>
+   <addaction name="actionStartNM"/>
+   <addaction name="actionStartHM"/>
+   <addaction name="actionPause"/>
    <addaction name="actionRules"/>
    <addaction name="actionAbout"/>
    <addaction name="actionQuit"/>
   </widget>
-  <action name="actionStart">
+  <action name="actionStartNM">
    <property name="text">
-    <string>Start</string>
+    <string>Play normal mode</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -50,6 +52,19 @@
   <action name="actionRules">
    <property name="text">
     <string>Rules</string>
+   </property>
+  </action>
+  <action name="actionStartHM">
+   <property name="text">
+    <string>Play hard mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Start (Hard Mode)</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="text">
+    <string>Pause/Resume</string>
    </property>
   </action>
  </widget>

@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <ctime>
+#include <QPushButton>
 
 #include "inc/constants.h"
 #include "inc/gamecontroller.h"
@@ -21,7 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon(":/data/game-icon"));
     setWindowTitle(tr("Funny Snake"));
     setCentralWidget(view);
-    resize(600, 600);
+    resize(620, 620);
+    setMinimumSize(620, 620);
 
     initScene();
     initSceneBackground();
@@ -63,11 +65,6 @@ void MainWindow::adjustViewSize()
     qDebug() << "In function adjustViewSize().";
 }
 
-void MainWindow::on_actionStart_triggered()
-{
-    game->mainMenu_buttonPressed();
-}
-
 void MainWindow::on_actionRules_triggered()
 {
     QMessageBox msgBox;
@@ -82,6 +79,7 @@ void MainWindow::on_actionRules_triggered()
                       "                  ##  Keyboard Config  ##\n"\
                       "- Main menu\n"\
                       "    - Press ENTER to start.\n"\
+                      "    - Press UP or DOWN to select mode.\n"\
                       "- Playing\n"\
                       "    - Press UP to start moving.\n"\
                       "    - Press LEFT or RIGHT to change the direction.\n"\
@@ -96,7 +94,7 @@ void MainWindow::on_actionAbout_triggered()
     msgBox.setWindowTitle(tr("About"));
     msgBox.setText(tr("Name: funny snake\n"\
                       "Author: Shallwe\n"\
-                      "Date: 2018/10/26\n"\
+                      "Date: 2018/10/27\n"\
                       "Version: Beta\n"\
                       "Instruction: A simple snake game based on Qt5.\n"));
     msgBox.exec();
@@ -105,4 +103,24 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionQuit_triggered()
 {
     close();
+}
+
+void MainWindow::on_actionStartNM_triggered()
+{
+    game->mainMenu_buttonPressed(GM_Normal);
+}
+
+void MainWindow::on_actionStartHM_triggered()
+{
+    game->mainMenu_buttonPressed(GM_Hard);
+}
+
+void MainWindow::on_actionPause_triggered()
+{
+    if (game->getPaused()) {
+        game->resume();
+    }
+    else {
+        game->pause();
+    }
 }

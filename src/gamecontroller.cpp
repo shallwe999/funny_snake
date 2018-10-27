@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <QPainter>
+#include <QPushButton>
 
 #include "inc/gamecontroller.h"
 #include "inc/constants.h"
@@ -16,9 +17,10 @@ GameController::GameController(QGraphicsScene &scene, QObject *parent) :
     scene(scene),
     snake(new Snake(*this)),
     scoreboard(new Scoreboard(*this)),
-    readyText(nullptr)
+    readyText(nullptr),
+    _modePointed(GM_Normal)
 {
-    timer.start(15);  //游戏循环的定时器（15毫秒1帧）
+    timer.start(18);  //游戏循环的定时器（18毫秒1帧）
 
     scene.installEventFilter(this);
 
@@ -43,6 +45,27 @@ void GameController::showMainMenu()
     text->setPos(QPointF(- text->boundingRect().width() / 2, -150));
     text->setDefaultTextColor(TEXT_COLOR_1);
     scene.addItem(text);
+
+    QGraphicsTextItem *modeText1 = new QGraphicsTextItem("Play Normal Mode");
+    modeText1->setFont(QFont("Times New Roman", 25, 75, true));
+    modeText1->setPos(QPointF(- modeText1->boundingRect().width() / 2, 40));
+
+    QGraphicsTextItem *modeText2 = new QGraphicsTextItem("Play Hard Mode");
+    modeText2->setFont(QFont("Times New Roman", 25, 75, true));
+    modeText2->setPos(QPointF(- modeText2->boundingRect().width() / 2, 100));
+    modeText2->setDefaultTextColor(TEXT_COLOR_NO);
+
+    if (_modePointed == GM_Normal) {
+        modeText1->setDefaultTextColor(TEXT_COLOR_YES);
+        modeText2->setDefaultTextColor(TEXT_COLOR_NO);
+    }
+    else {
+        modeText2->setDefaultTextColor(TEXT_COLOR_YES);
+        modeText1->setDefaultTextColor(TEXT_COLOR_NO);
+    }
+
+    scene.addItem(modeText1);
+    scene.addItem(modeText2);
 }
 
 void GameController::showReadyText()
@@ -50,9 +73,15 @@ void GameController::showReadyText()
     if (snake->getMoveDirection() == Snake::NoMove) {
         readyText = new QGraphicsTextItem("Ready?");
         readyText->setFont(QFont("Times New Roman", 30, 75, true));
-        readyText->setPos(QPointF(- readyText->boundingRect().width() / 2, 30));
+        readyText->setPos(QPointF(- readyText->boundingRect().width() / 2, 25));
         readyText->setDefaultTextColor(TEXT_COLOR_3);
         scene.addItem(readyText);
+
+        hintText = new QGraphicsTextItem("Press UP to move!");
+        hintText->setFont(QFont("Times New Roman", 20, 75, true));
+        hintText->setPos(QPointF(- hintText->boundingRect().width() / 2, 95));
+        hintText->setDefaultTextColor(TEXT_COLOR_3);
+        scene.addItem(hintText);
     }
 }
 
@@ -61,6 +90,8 @@ void GameController::hideReadyText()
     if (readyText != nullptr) {
         scene.removeItem(readyText);
         readyText = nullptr;
+        scene.removeItem(hintText);
+        hintText = nullptr;
     }
 
 }
@@ -88,18 +119,56 @@ void GameController::restartGame()
     QTimer::singleShot(0, this, SLOT(showReadyText()));
 }
 
+void GameController::restartHard()
+{
+    qDebug() << "In restartHard().";
+    scene.clear();
+
+    hardModeWall = new Wall(110, 210);
+    scene.addItem(hardModeWall);
+
+    snake = new Snake(*this);
+    snake->updateWallRadius(hardModeWall->getWallRadius());
+    scene.addItem(snake);
+
+    scoreboard = new Scoreboard(*this);
+    scene.addItem(scoreboard);
+
+    Food *fd1 = new Food(0, -60, GO_Food_Normal);
+    scene.addItem(fd1);
+    Food *fd2 = new Food(0, 60, GO_Food_Normal);
+    scene.addItem(fd2);
+    _foodEaten = 0;
+
+    QTimer::singleShot(0, this, SLOT(showReadyText()));
+}
+
 void GameController::addNewFood()
 {
     _foodEaten++;
     qreal x, y;
 
-    do {
-        int radius = qrand() % 190;
-        qreal angle = static_cast<qreal>( (static_cast<double>(qrand()) / RAND_MAX) * PI*2 );
-        x = static_cast<qreal>(radius) * cos(angle);
-        y = static_cast<qreal>(radius) * sin(angle);
+    if (_gameMode == GM_Normal) {
+        do {
+            int radius = qrand() % 190;
+            qreal angle = static_cast<qreal>( (static_cast<double>(qrand()) / RAND_MAX) * PI*2 );
+            x = static_cast<qreal>(radius) * cos(angle);
+            y = static_cast<qreal>(radius) * sin(angle);
 
-    } while (snake->isTheBody(QPointF(x, y), FOOD_SIZE));
+        } while (snake->isTheBody(QPointF(x, y), FOOD_SIZE));
+    }
+    else if (_gameMode == GM_Hard) {
+        do {
+            int limitRadius = hardModeWall->getWallRadius() - 10;
+            qDebug() << limitRadius;
+            int radius = qrand() % limitRadius;
+            qreal angle = static_cast<qreal>( (static_cast<double>(qrand()) / RAND_MAX) * PI*2 );
+            x = static_cast<qreal>(radius) * cos(angle);
+            y = static_cast<qreal>(radius) * sin(angle);
+
+        } while (snake->isTheBody(QPointF(x, y), FOOD_SIZE));
+    }
+
 
     GameObjectTypes foodKind = GO_Food_Normal;
     if (_foodEaten > 10) {  //调试用1 运行用10
@@ -157,6 +226,12 @@ void GameController::snakeAteFood(Snake *snake, Food *food)
 
     scene.removeItem(food);
 
+    if (_gameMode == GM_Hard) {
+        // add wall radius (hard mode)
+        hardModeWall->addWallRadius(1);
+        snake->updateWallRadius(hardModeWall->getWallRadius());
+    }
+
     food = nullptr;
     //delete food;  // 好像是这里出问题，会异常退出，等待解决
 
@@ -177,10 +252,10 @@ void GameController::gameOver()
 {
     qDebug() << "Game over.";
 
-    pause();
     _inMainMenu = false;
     _inGaming = false;
     _inGameOver = true;
+    pause();
 
     QGraphicsTextItem *text = new QGraphicsTextItem("Game Over");
     text->setFont(QFont("Times New Roman", 50, 75, true));
@@ -191,18 +266,46 @@ void GameController::gameOver()
 
 void GameController::pause()
 {
-    disconnect(&timer, SIGNAL(timeout()),
-               &scene, SLOT(advance()));
+    if (!_paused) {
+        qDebug() << "Paused.";
+        disconnect(&timer, SIGNAL(timeout()),
+                   &scene, SLOT(advance()));
+        _paused = true;
+
+        // show pause string
+        if (_inGaming) {
+            pauseText = new QGraphicsTextItem("Paused");
+            pauseText->setFont(QFont("Times New Roman", 40, 75, true));
+            pauseText->setPos(QPointF(- pauseText->boundingRect().width() / 2, -150));
+            pauseText->setDefaultTextColor(TEXT_COLOR_YES);
+            scene.addItem(pauseText);
+        }
+    }
 }
 
 void GameController::resume()
 {
-    connect(&timer, SIGNAL(timeout()),
-            &scene, SLOT(advance()));
+    if (_paused && !_inGameOver) {
+        qDebug() << "Resumed.";
+        connect(&timer, SIGNAL(timeout()),
+                &scene, SLOT(advance()));
+        _paused = false;
+
+        if (_inGaming) {
+            scene.removeItem(pauseText);
+            pauseText = nullptr;
+        }
+    }
 }
 
-void GameController::mainMenu_buttonPressed()
+bool GameController::getPaused()
 {
+    return _paused;
+}
+
+void GameController::mainMenu_buttonPressed(GameMode mode)
+{
+    _gameMode = mode;
     qDebug() << "Press the startButton.";
     if (_inMainMenu) {
         disconnect(&timer, SIGNAL(timeout()),
@@ -215,29 +318,34 @@ void GameController::mainMenu_buttonPressed()
     _inMainMenu = false;
     _inGaming = true;
     _inGameOver = false;
-    restartGame();
 
-
+    if (mode == GM_Normal) {
+        restartGame();
+    }
+    else if (mode == GM_Hard) {
+        restartHard();
+    }
 }
 
 void GameController::mainMenu_handleKeyPressed(QKeyEvent *event)
 {
     if (!event->isAutoRepeat()) {
-        qDebug() << "Press the key (in main menu).";
+
         switch (event->key()) {
             case Qt::Key_Enter:
             case Qt::Key_Return:
-                // 退出主菜单
-                disconnect(&timer, SIGNAL(timeout()),
-                        this, SLOT(showMainMenu()));
-
-                if (!_inGaming) {
-                    resume();
+                // 退出主菜单，进入游戏
+                mainMenu_buttonPressed(_modePointed);
+                break;
+            case Qt::Key_Up:  //只有两个选项，并在一起
+            case Qt::Key_Down:
+                if (_modePointed == GM_Normal) {
+                    _modePointed = GM_Hard;
                 }
-                _inMainMenu = false;
-                _inGaming = true;
-                _inGameOver = false;
-                restartGame();
+                else {
+                    _modePointed = GM_Normal;
+                }
+                showMainMenu();
                 break;
             default:
                 break;

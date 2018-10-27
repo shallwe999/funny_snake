@@ -7,19 +7,20 @@
 #include "inc/snake.h"
 
 static const int RUNNING_LENGTH = 9;
-static const qreal ROTATE_ANGLE = PI / 16;
-static const qreal ROTATE_ANGLE_SWIFT = PI / 10;
+static const qreal ROTATE_ANGLE = PI / 15;
+static const qreal ROTATE_ANGLE_SWIFT = PI / 9;
 
 Snake::Snake(GameController &controller) :
     _head(0, 0),
     _headDirection(PI/2),
-    _growing(10),
+    _growing(6),
     _speed(5),
     _moveDirection(NoMove),
     _snakeColor(SNAKE_COLOR_NORMAL),
     _buffTime(-1),
     _lengthAdded(0),
     _rotateBuff(false),
+    _nowWallRadius(WALL_RADIUS),
     controller(controller)
 {
 }
@@ -110,8 +111,8 @@ void Snake::setBuff(GameObjectTypes buff, int period)
         _speed += 3;
     }
     else if (buff == GO_Food_AddLength) {
-        _growing += 10;
-        _lengthAdded += 10;
+        _growing += 15;
+        _lengthAdded += 15;
     }
     else if (buff == GO_Food_RotateSwift) {
         _rotateBuff = true;
@@ -226,7 +227,7 @@ void Snake::handleCollisions()
             // Let GameController handle the event by putting another apple
             qDebug() << "Snake eat food.";
             controller.snakeAteFood(this, (Food *)collidingItem);
-            _growing += 1;
+            _growing += 2;
         }
     }
 
@@ -237,8 +238,13 @@ void Snake::handleCollisions()
     }
 
     // Check snake hitting the wall
-    if (pow(_head.rx(), 2) + pow(_head.ry(), 2) >= pow(WALL_RADIUS - 2, 2)) {
+    if (pow(_head.rx(), 2) + pow(_head.ry(), 2) >= pow(_nowWallRadius - 2, 2)) {
         qDebug() << "Snake hit the wall.";
         controller.snakeHitWall(this);
     }
+}
+
+void Snake::updateWallRadius(int newRadius)
+{
+    _nowWallRadius = newRadius;
 }

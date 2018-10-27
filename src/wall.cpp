@@ -5,6 +5,15 @@
 
 Wall::Wall()
 {
+    _wallRadius = WALL_RADIUS;
+    _limitRadius = WALL_RADIUS;
+    setData(GD_Type, GO_Wall);
+}
+
+Wall::Wall(int minWallRadius, int maxWallradius)
+{
+    _wallRadius = minWallRadius;
+    _limitRadius = maxWallradius;
     setData(GD_Type, GO_Wall);
 }
 
@@ -23,6 +32,7 @@ void Wall::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     painter->drawPath(shape());
     painter->setPen( QPen(WALL_COLOR_2, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin) );
     painter->drawPath(shape());
+    update();
 
     painter->restore();
 }
@@ -30,6 +40,18 @@ void Wall::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 QPainterPath Wall::shape() const
 {
     QPainterPath p;
-    p.addEllipse(QPointF(0, 0), WALL_RADIUS, WALL_RADIUS);
+    p.addEllipse(QPointF(0, 0), _wallRadius, _wallRadius);
     return p;
+}
+
+int Wall::getWallRadius()
+{
+    return _wallRadius;
+}
+
+void Wall::addWallRadius(int added)
+{
+    if (_wallRadius + added <= _limitRadius) {
+        _wallRadius += added;
+    }
 }

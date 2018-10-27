@@ -21,10 +21,13 @@ public:
 private slots:
     void adjustViewSize();
 
-    void on_actionStart_triggered();
+    void on_actionStartNM_triggered();
+    void on_actionStartHM_triggered();
     void on_actionRules_triggered();
     void on_actionAbout_triggered();
     void on_actionQuit_triggered();
+
+    void on_actionPause_triggered();
 
 private:
     void initScene();

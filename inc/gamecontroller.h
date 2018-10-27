@@ -5,6 +5,8 @@
 #include <QTimer>
 #include <QGraphicsItem>
 
+#include "constants.h"
+
 class QGraphicsScene;
 class QKeyEvent;
 
@@ -20,11 +22,13 @@ public:
     GameController(QGraphicsScene &scene, QObject *parent = nullptr);
     ~GameController();
 
-    void mainMenu_buttonPressed();
+    void mainMenu_buttonPressed(GameMode mode);
 
     void snakeAteFood(Snake *snake, Food *food);
     void snakeHitWall(Snake *snake);
     void snakeAteItself(Snake *snake);
+
+    bool getPaused();
 
 public slots:
     void showMainMenu();
@@ -34,6 +38,7 @@ public slots:
     void resume();
     void gameOver();
     void restartGame();
+    void restartHard();
 
 protected:
      bool eventFilter(QObject *object, QEvent *event);
@@ -49,11 +54,16 @@ private:
     QGraphicsScene &scene;
 
     Snake *snake;
+    Wall *hardModeWall;
     Scoreboard *scoreboard;
-    QGraphicsTextItem *readyText;
+    QGraphicsTextItem *readyText, *hintText, *pauseText;
+
+    GameMode _modePointed;
+    GameMode _gameMode;
 
     int _foodEaten;
 
+    bool _paused = true;
     bool _inMainMenu = true;
     bool _inGaming = false;
     bool _inGameOver = false;

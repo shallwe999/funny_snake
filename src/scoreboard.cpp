@@ -29,7 +29,7 @@ QPainterPath Scoreboard::shape() const
 
     _scorestr->replace(0, 99, QString("Score: %1").arg(_score));
     QString tempstr = QString(_scorestr->data());
-    path.addText( QPointF(-200, -220), QFont("Times New Roman", 25, 75, true), tempstr );
+    path.addText( QPointF(-180, -240), QFont("Times New Roman", 25, 75, true), tempstr );
 
     return path;
 }
