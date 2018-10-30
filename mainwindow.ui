@@ -14,25 +14,37 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>620</width>
+     <height>26</height>
+    </rect>
    </property>
-   <property name="movable">
-    <bool>false</bool>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionStartNM"/>
-   <addaction name="actionStartHM"/>
-   <addaction name="actionPause"/>
-   <addaction name="actionRules"/>
-   <addaction name="actionAbout"/>
-   <addaction name="actionQuit"/>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Play</string>
+    </property>
+    <addaction name="actionStartNM"/>
+    <addaction name="actionStartHM"/>
+    <addaction name="separator"/>
+    <addaction name="actionPause"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>Others</string>
+    </property>
+    <addaction name="actionRules"/>
+    <addaction name="actionHiscores"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuGame"/>
+   <addaction name="menuAbout"/>
   </widget>
   <action name="actionStartNM">
    <property name="text">
@@ -64,7 +76,15 @@
   </action>
   <action name="actionPause">
    <property name="text">
-    <string>Pause/Resume</string>
+    <string>Pause / Resume</string>
+   </property>
+  </action>
+  <action name="actionHiscores">
+   <property name="text">
+    <string>Hiscores</string>
+   </property>
+   <property name="toolTip">
+    <string>Hiscores</string>
    </property>
   </action>
  </widget>

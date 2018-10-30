@@ -16,7 +16,7 @@ GameController::GameController(QGraphicsScene &scene, QObject *parent) :
     QObject(parent),
     scene(scene),
     snake(new Snake(*this)),
-    scoreboard(new Scoreboard(*this)),
+    scoreboard(nullptr),
     readyText(nullptr),
     _modePointed(GM_Normal)
 {
@@ -107,7 +107,8 @@ void GameController::restartGame()
     snake = new Snake(*this);
     scene.addItem(snake);
 
-    scoreboard = new Scoreboard(*this);
+    scoreboard = new Scoreboard();
+    scoreboard->setGameMode(GM_Normal);
     scene.addItem(scoreboard);
 
     Food *fd1 = new Food(0, -100, GO_Food_Normal);
@@ -131,7 +132,8 @@ void GameController::restartHard()
     snake->updateWallRadius(hardModeWall->getWallRadius());
     scene.addItem(snake);
 
-    scoreboard = new Scoreboard(*this);
+    scoreboard = new Scoreboard();
+    scoreboard->setGameMode(GM_Hard);
     scene.addItem(scoreboard);
 
     Food *fd1 = new Food(0, -60, GO_Food_Normal);
@@ -313,6 +315,9 @@ void GameController::mainMenu_buttonPressed(GameMode mode)
     }
 
     if (!_inGaming) {
+        _inMainMenu = true;  // 就当作都是在main menu界面进入
+        _inGaming = false;
+        _inGameOver = false;
         resume();
     }
     _inMainMenu = false;

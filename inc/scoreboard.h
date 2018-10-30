@@ -3,30 +3,43 @@
 
 #include <QGraphicsItem>
 #include <QRectF>
+#include <QFile>
 
 #include "inc/constants.h"
 
-class GameController;
+void showHiscoreWindow();
 
 class Scoreboard : public QGraphicsItem
 {
 public:
-    Scoreboard(GameController & controller);
+    Scoreboard();
+    ~Scoreboard();
 
     QRectF boundingRect() const;
     QPainterPath shape() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
     void addScore(int score);
+    void setGameMode(GameMode mode);
 
 protected:
     void advance(int step);
 
 private:
-    int _score;
-    QString *_scorestr;
+    void readHiscores();
+    void writeHiscores();
+    void setNewHiscore(int newhisc);
+    void openHiscoreFile();
+    void closeHiscoreFile();
 
-    GameController &controller;
+    int _score;
+    QString *_scorestr, *_hiscorestr;
+
+    QFile _hiscoreFile;
+    int _normalHiscore;
+    int _hardHiscore;
+
+    GameMode _mode;
 };
 
 #endif // SCOREBOARD_H

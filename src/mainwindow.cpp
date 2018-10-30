@@ -8,6 +8,7 @@
 #include "inc/constants.h"
 #include "inc/gamecontroller.h"
 #include "inc/mainwindow.h"
+#include "inc/scoreboard.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -123,4 +124,9 @@ void MainWindow::on_actionPause_triggered()
     else {
         game->pause();
     }
+}
+
+void MainWindow::on_actionHiscores_triggered()
+{
+    showHiscoreWindow();
 }

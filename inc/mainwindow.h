@@ -26,8 +26,8 @@ private slots:
     void on_actionRules_triggered();
     void on_actionAbout_triggered();
     void on_actionQuit_triggered();
-
     void on_actionPause_triggered();
+    void on_actionHiscores_triggered();
 
 private:
     void initScene();
