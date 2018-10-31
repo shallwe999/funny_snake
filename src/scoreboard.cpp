@@ -74,17 +74,20 @@ void Scoreboard::advance(int step)
 
 void Scoreboard::openHiscoreFile()
 {
+    qDebug() << "Scoreboard file opened.";
     _hiscoreFile.setFileName("hiscdata.dat");
     _hiscoreFile.open(QIODevice::ReadWrite);
 }
 
 void Scoreboard::closeHiscoreFile()
 {
+    qDebug() << "Scoreboard file closed.";
     _hiscoreFile.close();
 }
 
 void Scoreboard::readHiscores()
 {
+    qDebug() << "Scoreboard file read.";
     QDataStream in(&_hiscoreFile);
     in.device()->seek(0);
 
@@ -117,6 +120,7 @@ void Scoreboard::setNewHiscore(int newhisc)
 
 void Scoreboard::writeHiscores()
 {
+    qDebug() << "Scoreboard file written.";
     QDataStream out(&_hiscoreFile);
     out.device()->seek(0);
 
@@ -124,6 +128,13 @@ void Scoreboard::writeHiscores()
     qint32 nhs = static_cast<qint32>(_normalHiscore);
     qint32 hhs = static_cast<qint32>(_hardHiscore);
     out << static_cast<quint32>(0xA0B0C0D0) << nhs << hhs;
+}
+
+void Scoreboard::cleanHiscores()
+{
+    _normalHiscore = 0;
+    _hardHiscore = 0;
+    writeHiscores();
 }
 
 void Scoreboard::setGameMode(GameMode mode)
@@ -140,16 +151,29 @@ void Scoreboard::addScore(int score)
     }
 }
 
-void showHiscoreWindow()
+int Scoreboard::getNormalHiscore()
+{
+    return _normalHiscore;
+}
+
+int Scoreboard::getHardHiscore()
+{
+    return _hardHiscore;
+}
+
+void showHiscoreWindow(bool isInMainMenu)
 {
     QMessageBox msgBox;
-    int nhs = 0, hhs = 0;  // TODO: read and reset.
-    QString hstext = QString("Normal mode:   %1\nHard   mode:   %2").arg(nhs).arg(hhs);
+    msgBox.setWindowTitle(QObject::tr("Hiscore"));
+
+    Scoreboard sbd;
+    int nhs = sbd.getNormalHiscore(), hhs = sbd.getHardHiscore();
+    QString hstext = QString("Normal mode:    %1\nHard   mode:    %2").arg(nhs).arg(hhs);
 
     msgBox.setText(QObject::tr("  ###  Hiscore  ###"));
     msgBox.setInformativeText(hstext);
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Apply);
-    msgBox.setButtonText(QMessageBox::Apply, "To be contd.");
+    msgBox.setButtonText(QMessageBox::Apply, "Reset");
     msgBox.setDefaultButton(QMessageBox::Ok);
 
     int ret = msgBox.exec();
@@ -159,6 +183,42 @@ void showHiscoreWindow()
         break;
     case QMessageBox::Apply:
         qDebug() << "Choose reset.";
+        bool result = showAssureResetWindow();
+        if (result && !isInMainMenu) {
+            QMessageBox submsgBox;
+            submsgBox.setWindowTitle(QObject::tr("Warning"));
+            submsgBox.setIcon(QMessageBox::Information);
+            submsgBox.setText(QObject::tr("Back to main menu first."));
+            submsgBox.exec();
+        }
+        else if (result) {
+            sbd.cleanHiscores();
+        }
+        break;
+    }
+}
+
+bool showAssureResetWindow()
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(QObject::tr("Assure"));
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setText(QObject::tr("Sure to reset hiscore data?"));
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+
+    int ret = msgBox.exec();
+    switch (ret) {
+    case QMessageBox::Ok:
+        qDebug() << "Assure reset.";
+        return true;
+        break;
+    case QMessageBox::Cancel:
+        qDebug() << "Cancel reset.";
+        return false;
+        break;
+    default:
+        return false;
         break;
     }
 }

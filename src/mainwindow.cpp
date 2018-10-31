@@ -93,9 +93,9 @@ void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox msgBox;
     msgBox.setWindowTitle(tr("About"));
-    msgBox.setText(tr("Name: funny snake\n"\
+    msgBox.setText(tr("Name: Funny Snake\n"\
                       "Author: Shallwe\n"\
-                      "Date: 2018/10/27\n"\
+                      "Date: 2018/10/31\n"\
                       "Version: Beta\n"\
                       "Instruction: A simple snake game based on Qt5.\n"));
     msgBox.exec();
@@ -128,5 +128,5 @@ void MainWindow::on_actionPause_triggered()
 
 void MainWindow::on_actionHiscores_triggered()
 {
-    showHiscoreWindow();
+    showHiscoreWindow(game->isInMainMenu());
 }

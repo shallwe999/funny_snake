@@ -7,7 +7,8 @@
 
 #include "inc/constants.h"
 
-void showHiscoreWindow();
+void showHiscoreWindow(bool isInMainMenu);
+bool showAssureResetWindow();
 
 class Scoreboard : public QGraphicsItem
 {
@@ -21,6 +22,10 @@ public:
 
     void addScore(int score);
     void setGameMode(GameMode mode);
+    void cleanHiscores();
+
+    int getNormalHiscore();
+    int getHardHiscore();
 
 protected:
     void advance(int step);

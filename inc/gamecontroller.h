@@ -29,6 +29,7 @@ public:
     void snakeAteItself(Snake *snake);
 
     bool getPaused();
+    bool isInMainMenu();
 
 public slots:
     void showMainMenu();

@@ -332,6 +332,11 @@ void GameController::mainMenu_buttonPressed(GameMode mode)
     }
 }
 
+bool GameController::isInMainMenu()
+{
+    return _inMainMenu;
+}
+
 void GameController::mainMenu_handleKeyPressed(QKeyEvent *event)
 {
     if (!event->isAutoRepeat()) {
